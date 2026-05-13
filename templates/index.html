@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>THREATLENS — Crime Prediction</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #00e0ff;
+      --accent-2: #00b3cc;
+    }
+
+    body {
+      background-color:#e33434;
+      background-image:
+        linear-gradient(180deg, rgba(2,8,12,0.55), rgba(8,16,22,0.65)),
+        url("{{ url_for('static', filename='bg-magnify.png') }}");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height:100vh;
+      margin:0;
+      color: #e8f6fb;
+      font-family:'Poppins';
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      padding: 30px;
+      width: 420px;
+      border-radius: 14px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0px 8px 30px rgba(0,0,0,0.4);
+      text-align:center;
+    }
+
+    label { 
+      display:block; 
+      margin-top:10px; 
+      text-align:left;
+      font-size:13px;
+      color:#cfeff7;
+    }
+
+    select, input {
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:8px;
+  border:none;
+  background: rgba(255,255,255,0.15);
+  color:#ffffff;
+  font-size:14px;
+  outline:none;
+}
+
+select option {
+  background:#0a1a22; /* Dark dropdown menu background */
+  color:#ffffff;      /* Visible state names */
+}
+
+select {
+  border:1px solid rgba(255,255,255,0.3);
+}
+
+    .btn {
+      width:100%;
+      margin-top:20px;
+      padding:12px;
+      background: linear-gradient(90deg, #00e0ff, #00b3cc);
+      border:none;
+      border-radius:10px;
+      color:#042428;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .result {
+      margin-top:20px;
+      background: rgba(0,224,255,0.08);
+      padding:10px;
+      border-radius:8px;
+      border:1px solid rgba(0,224,255,0.2);
+    }
+
+    img.graph {
+      width:100%;
+      border-radius:10px;
+      margin-top:15px;
+      border:1px solid rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h2 style="color:#f44c6e;margin-top:0;">THREATLENS</h2>
+    <p style="margin-top:-5px;">Zooming in on Neighborhood Crime</p>
+
+    <form action="/predict" method="POST">
+
+      <label>Select State</label>
+      <select name="state" required>
+        <option value="">-- Select --</option>
+        {% for s in ['Karnataka','Maharashtra','Delhi','Tamil Nadu','Gujarat','Kerala','West Bengal','Rajasthan'] %}
+          <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Enter Year</label>
+      <input type="number" name="year" placeholder="e.g. 2025" required>
+
+      <label>Enter Population</label>
+      <input type="number" name="population" placeholder="e.g. 70000000" required>
+
+      <button class="btn" type="submit">Predict</button>
+    </form>
+
+    {% if prediction_dict %}
+    <div class="result">
+      <h3 style="color:#ec4f59;margin:0;">Predicted Crime Counts</h3>
+      <ul style="list-style:none;padding:0;margin-top:10px;">
+        {% for crime, value in prediction_dict.items() %}
+          <li style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+            <strong>{{ crime }}:</strong> {{ value }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if graph_image %}
+    <div>
+      <h3 style="color:#f7f2f3;margin-top:20px;">Prediction Graph</h3>
+      <img class="graph" src="{{ url_for('static', filename='prediction_graph.png') }}">
+    </div>
+    {% endif %}
+
+  </div>
+</body>
+</html>

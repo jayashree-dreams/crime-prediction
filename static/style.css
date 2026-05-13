@@ -1,0 +1,25 @@
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(0, 224, 255, 0.35); /* Light Blue */
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    border: 1px solid rgba(0,224,255,0.7);
+    transition: 0.3s ease-in-out;
+}
+
+select:focus {
+    box-shadow: 0 0 10px #00eaff;
+    background: rgba(0,224,255,0.45);
+}
+
+select option {
+    background: #0b2028; /* dark dropdown list */
+    color: #ffffff;
+    font-weight: 500;
+}
