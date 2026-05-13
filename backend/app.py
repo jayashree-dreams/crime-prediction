@@ -1,9 +1,10 @@
+from collections import defaultdict
+from csv import DictReader
 from pathlib import Path
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import joblib
-import pandas as pd
 
 
 app = Flask(__name__)
@@ -18,16 +19,39 @@ DATA_PATH = PROJECT_ROOT / "data" / "crime_data.csv"
 model = joblib.load(MODEL_PATH)
 label_encoder = joblib.load(LABEL_ENCODER_PATH)
 
-df = pd.read_csv(DATA_PATH)
-max_year = int(df["year"].max())
 target_cols = ["murder", "rape", "robbery", "theft", "assault", "property_crime"]
-trend_rates = {}
+max_year = 0
+yearly_totals = defaultdict(lambda: defaultdict(float))
+yearly_counts = defaultdict(int)
+
+with DATA_PATH.open(newline="", encoding="utf-8") as csv_file:
+    reader = DictReader(csv_file)
+    for row in reader:
+        year = int(row["year"])
+        max_year = max(max_year, year)
+        yearly_counts[year] += 1
+        for col in target_cols:
+            yearly_totals[year][col] += float(row[col])
+
+yearly_means = {}
+for year, totals in yearly_totals.items():
+    count = yearly_counts[year]
+    yearly_means[year] = {col: totals[col] / count for col in target_cols}
+
+sorted_years = sorted(yearly_means)
+trend_rates = {col: None for col in target_cols}
 
 for col in target_cols:
-    yearly_data = df[["year", col]].groupby("year").mean()
-    yearly_data["shift"] = yearly_data[col].shift(1)
-    yearly_data["growth"] = (yearly_data[col] - yearly_data["shift"]) / yearly_data["shift"]
-    trend_rates[col] = yearly_data["growth"].mean()
+    growth_values = []
+    previous_value = None
+    for year in sorted_years:
+        current_value = yearly_means[year][col]
+        if previous_value not in (None, 0):
+            growth_values.append((current_value - previous_value) / previous_value)
+        previous_value = current_value
+
+    if growth_values:
+        trend_rates[col] = sum(growth_values) / len(growth_values)
 
 
 @app.get("/")
@@ -56,17 +80,18 @@ def predict():
     except ValueError:
         return jsonify({"error": f"Unknown state: {state}"}), 400
 
-    input_df = pd.DataFrame([[state_encoded, year, population]], columns=["state", "year", "population"])
-    preds = model.predict(input_df)[0]
-    preds = pd.Series(preds, index=target_cols)
+    preds = model.predict([[state_encoded, year, population]])[0]
 
     if year > max_year:
         year_gap = year - max_year
         for col in target_cols:
-            if pd.notna(trend_rates[col]):
-                preds[col] *= (1 + trend_rates[col]) ** year_gap
+            if trend_rates[col] is not None:
+                preds[target_cols.index(col)] *= (1 + trend_rates[col]) ** year_gap
 
-    prediction_dict = {crime: max(0, int(round(preds[crime]))) for crime in target_cols}
+    prediction_dict = {
+        crime: max(0, int(round(preds[index])))
+        for index, crime in enumerate(target_cols)
+    }
 
     return jsonify(
         {
