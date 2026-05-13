@@ -1,0 +1,164 @@
+:root {
+  --bg: #07111a;
+  --panel: rgba(13, 25, 38, 0.88);
+  --panel-border: rgba(123, 209, 255, 0.2);
+  --text: #edf6ff;
+  --muted: #9fb4c9;
+  --accent: #35d0ff;
+  --accent-2: #67f0c8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(53, 208, 255, 0.16), transparent 40%),
+    linear-gradient(180deg, #07111a 0%, #0a1826 100%);
+}
+
+.shell {
+  width: min(960px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 48px 0 64px;
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  line-height: 1;
+}
+
+.subhead {
+  margin: 12px 0 0;
+  color: var(--muted);
+  max-width: 560px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+form {
+  display: grid;
+  gap: 14px;
+}
+
+label {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid rgba(103, 240, 200, 0.22);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+
+select option {
+  background: #0a1522;
+}
+
+.btn {
+  margin-top: 6px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  color: #03131f;
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.status,
+.result {
+  margin-top: 18px;
+}
+
+.status {
+  color: var(--muted);
+}
+
+.result {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 18px;
+}
+
+.result h2 {
+  margin: 0 0 12px;
+}
+
+.result ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.result li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.total {
+  margin: 14px 0 0;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+.chart-wrap {
+  margin-top: 22px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .result li {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

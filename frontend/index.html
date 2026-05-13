@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>THREATLENS Crime Prediction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    window.BACKEND_URL = window.BACKEND_URL || "https://YOUR-BACKEND-SERVICE.onrender.com";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">Crime Prediction Dashboard</p>
+      <h1>THREATLENS</h1>
+      <p class="subhead">Predict crime counts by state, year, and population.</p>
+    </section>
+
+    <section class="card">
+      <form id="predict-form">
+        <label for="state">State</label>
+        <select id="state" required>
+          <option value="">Loading states...</option>
+        </select>
+
+        <label for="year">Year</label>
+        <input id="year" type="number" min="1900" placeholder="e.g. 2025" required />
+
+        <label for="population">Population</label>
+        <input id="population" type="number" min="0" placeholder="e.g. 70000000" required />
+
+        <button class="btn" type="submit">Predict</button>
+      </form>
+
+      <div id="status" class="status">Connect your backend URL in app.js, then submit a prediction.</div>
+
+      <div id="result" class="result hidden">
+        <h2>Predictions</h2>
+        <ul id="prediction-list"></ul>
+        <p id="total-crimes" class="total"></p>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="crimeChart"></canvas>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
